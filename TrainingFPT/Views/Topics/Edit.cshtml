@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model TrainingFPT.Models.TopicDetail
+
+@{
+    ViewData["Title"] = "Topic Page Update";
+    ViewData["namePage"] = "Topic Update";
+    ViewBag.report = false;
+
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5> Update Topic</h5>
+            </div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" asp-action="Edit">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NameTopic"></label>
+                                <input type="text" asp-for="NameTopic" class="form-control" />
+                                <span asp-validation-for="NameTopic" class="text-danger"></span>
+                                @* id cua topic *@
+                                <input type="hidden" asp-for="Id" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label> Course </label>
+                                <select class="form-control"
+                                        asp-for="CourseId"
+                                        asp-items="@(new SelectList(ViewBag.Courses, "Value", "Text"))">
+                                </select>
+                                <span asp-validation-for="CourseId"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="com-sm-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Video"></label>
+                                <input type="file" asp-for="Video" class="form-control" />
+                                <span asp-validation-for="Video"></span>
+                                <br />
+                                <video>
+                                    <source src="/uploads/images/@Model.ViewVideoTopic" />
+                                </video>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Audio"></label>
+                                <input type="file" asp-for="Audio" class="form-control" />
+                                <span asp-validation-for="Audio"></span>
+                                <br />
+
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="DocumentTopic"></label>
+                                <input type="file" asp-for="DocumentTopic" class="form-control" />
+                                <span asp-validation-for="DocumentTopic"></span>
+                                <br />
+                                <form action="/uploads/images/@Model.ViewDocumentTopic" method="post">
+                                    @* <input type="file" accept=".dox" /> *@
+                                </form>
+
+
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Status"></label>
+                                <select class="form-control" asp-for="Status">
+                                    <option value=""> -- Choose --</option>
+                                    <option value="Active"> Active </option>
+                                    <option value="Deactive"> Deactive </option>
+                                </select>
+                                <span asp-validation-for="Status"></span>
+                            </div>
+                            <button class="btn btn-primary" type="submit"> Update </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
