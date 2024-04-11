@@ -48,24 +48,30 @@
                                 <label asp-for="Video"></label>
                                 <input type="file" asp-for="Video" class="form-control" />
                                 <span asp-validation-for="Video"></span>
-                                <br />
-                                <video>
+                                <video width="109" height="89" controls>
                                     <source src="/uploads/images/@Model.ViewVideoTopic" />
                                 </video>
+                                <br />
+                               
                             </div>
                             <div class="form-group mb-3">
                                 <label asp-for="Audio"></label>
                                 <input type="file" asp-for="Audio" class="form-control" />
                                 <span asp-validation-for="Audio"></span>
+                                <audio width="100" height="50" controls>
+                                    <source type="audio/mpeg" src="/uploads/images/@Model.ViewAudioTopic" />
+                                </audio>
                                 <br />
-
+                                
                             </div>
                             <div class="form-group mb-3">
                                 <label asp-for="DocumentTopic"></label>
                                 <input type="file" asp-for="DocumentTopic" class="form-control" />
                                 <span asp-validation-for="DocumentTopic"></span>
                                 <br />
+                                <a href="/uploads/images/@Model.ViewDocumentTopic" download>Download here</a>
                                 <form action="/uploads/images/@Model.ViewDocumentTopic" method="post">
+                                   
                                     @* <input type="file" accept=".dox" /> *@
                                 </form>
 

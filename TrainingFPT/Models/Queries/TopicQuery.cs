@@ -8,6 +8,7 @@ namespace TrainingFPT.Models.Queries
         {
             string dataKeyword = "%" + keyword + "%";
             List<TopicDetail> topics = new List<TopicDetail>();
+            Dictionary<int, string> courseNames = new Dictionary<int, string>();
             using (SqlConnection connection = Database.GetSqlConnection())
             {
                 string sqlQuery = string.Empty;
@@ -27,7 +28,19 @@ namespace TrainingFPT.Models.Queries
                     cmd.Parameters.AddWithValue("@status", filter ?? DBNull.Value.ToString());
                 }
 
-                string sql = "SELECT [to].*, [co].[NameCourse] FROM [Topics] AS [to] INNER JOIN [Courses] AS [co] ON [to].[CourseId] = [co].[Id] WHERE [to].[DeletedAt] IS NULL";
+                string sql = "SELECT [to].*, [co].[NameCourse] AS NameCourse FROM [Topics] AS [to] INNER JOIN [Courses] AS [co] ON [to].[CourseId] = [co].[Id] WHERE [to].[DeletedAt] IS NULL";
+                connection.Open();
+                using (SqlCommand cmdCourses = new SqlCommand("SELECT Id, NameCourse FROM Courses", connection))
+                {
+                    using (SqlDataReader readerCourses = cmdCourses.ExecuteReader())
+                    {
+                        while (readerCourses.Read())
+                        {
+                            courseNames.Add(Convert.ToInt32(readerCourses["Id"]), readerCourses["NameCourse"].ToString());
+                        }
+                    }
+                }
+                connection.Close();
                 connection.Open();
                 //SqlCommand cmd = new SqlCommand(sql, connection);
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -45,7 +58,12 @@ namespace TrainingFPT.Models.Queries
                         detail.Status = reader["Status"].ToString();
                         detail.viewCourseName = reader["CourseId"].ToString();
                         detail.CreatedAt = Convert.ToDateTime(reader["CreatedAt"]);
+                        if (courseNames.ContainsKey(detail.CourseId))
+                        {
+                            detail.NameCourse = courseNames[detail.CourseId];
+                        }
                         topics.Add(detail);
+                        
                     }
                 }
                 connection.Close();

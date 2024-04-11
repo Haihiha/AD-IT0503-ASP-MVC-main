@@ -21,6 +21,7 @@ namespace TrainingFPT.Controllers
                     Id = data.Id,
                     NameTopic = data.NameTopic,
                     CourseId = data.CourseId,
+                    NameCourse = data.NameCourse,
                     Description = data.Description,
                     ViewVideoTopic = data.ViewVideoTopic,
                     ViewAudioTopic = data.ViewAudioTopic,
@@ -57,15 +58,74 @@ namespace TrainingFPT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(TopicDetail topic, IFormFile Video, IFormFile Audio, IFormFile DocumentTopic)
         {
+            string videoTopic = "Null";
+            string audioTopic = "Null";
+            string documentTopic = "Null";
+            if (Video == null && Audio == null && DocumentTopic == null)
+            {
+                List<SelectListItem> items = new List<SelectListItem>();
+                var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
+                foreach (var course in dataCourses)
+                {
+                    items.Add(new SelectListItem
+                    {
+                        Value = course.Id.ToString(),
+                        Text = course.NameCourse
+                    });
+                }
+                ViewBag.Courses = items;
+                return View(topic);
+            }
+            if (Video == null && Audio == null && DocumentTopic == null && topic.NameTopic == null)
+            {
+                List<SelectListItem> items = new List<SelectListItem>();
+                var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
+                foreach (var course in dataCourses)
+                {
+                    items.Add(new SelectListItem
+                    {
+                        Value = course.Id.ToString(),
+                        Text = course.NameCourse
+                    });
+                }
+                ViewBag.Courses = items;
+                return View(topic);
+            }
+            if (Video == null)
+            {
+                ModelState.Remove("Video");
+
+            }
+            else
+            {
+                videoTopic = UploadFileHelper.UploadFile(Video);
+            }
+            if (Audio == null)
+            {
+                ModelState.Remove("Audio");
+
+            }
+            else
+            {
+                audioTopic = UploadFileHelper.UploadFile(Audio);
+            }
+
+            if (DocumentTopic == null)
+            {
+                ModelState.Remove("DocumentTopic");
+
+            }
+            else
+            {
+                documentTopic = UploadFileHelper.UploadFile(DocumentTopic);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     //return Ok(topic);
-                    string videoTopic = UploadFileHelper.UploadFile(Video);
-                    string audioTopic = UploadFileHelper.UploadFile(Audio);
-                    string documentTopic = UploadFileHelper.UploadFile(DocumentTopic);
-
+                 
                     int idTopic = new TopicQuery().InsertDataTopic(
                         topic.NameTopic,
                         topic.CourseId,
@@ -91,17 +151,24 @@ namespace TrainingFPT.Controllers
                     return Ok(ex.Message);
                 }
             }
-            List<SelectListItem> items = new List<SelectListItem>();
-            var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
-            foreach (var course in dataCourses)
+            
+            if (Video == null && Audio == null && DocumentTopic == null)
             {
-                items.Add(new SelectListItem
+                List<SelectListItem> items = new List<SelectListItem>();
+                var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
+                foreach (var course in dataCourses)
                 {
-                    Value = course.Id.ToString(),
-                    Text = course.NameCourse
-                });
+                    items.Add(new SelectListItem
+                    {
+                        Value = course.Id.ToString(),
+                        Text = course.NameCourse
+                    });
+                }
+                ViewBag.Courses = items;
+                return View(topic);
             }
-            ViewBag.Courses = items;
+          
+         
             return View(topic);
         }
 
@@ -141,62 +208,80 @@ namespace TrainingFPT.Controllers
         [HttpPost]
         public IActionResult Edit(TopicDetail topicDetail, IFormFile Video, IFormFile Audio, IFormFile DocumentTopic)
         {
-            try
+
+            string videoTopic = "Null";
+            string audioTopic = "Null";
+            string documentTopic = "Null";
+            if (Video == null)
             {
-                var detail = new TopicQuery().GetDataTopicById(topicDetail.Id);
-                string videoTopic = detail.ViewVideoTopic;
-                string audioTopic = detail.ViewAudioTopic;
-                string documentTopic = detail.ViewDocumentTopic;
-                // kiem tra xe nguoi co muon thay doi anh ko?
-                if (topicDetail.Video != null)
-                {
-                    // co thay doi anh
-                    videoTopic = UploadFileHelper.UploadFile(Video);
-                }
-                if (topicDetail.Audio != null)
-                {
-                    audioTopic = UploadFileHelper.UploadFile(Audio);
-                }
-                if (topicDetail.DocumentTopic != null)
-                {
-                    documentTopic = UploadFileHelper.UploadFile(DocumentTopic);
-                }
-                bool update = new TopicQuery().UpdateTopicById(
-                                topicDetail.NameTopic,
-                                topicDetail.CourseId,
-                                topicDetail.Description,
-                                videoTopic,
-                                audioTopic,
-                                documentTopic,
-                                topicDetail.Status,
-                                topicDetail.Id
-                              );
-                if (update)
-                {
-                    TempData["updateStatus"] = true;
-                }
-                else
-                {
-                    TempData["updateStatus"] = false;
-                }
-                return RedirectToAction(nameof(TopicsController.Index), "Topics");
+                ModelState.Remove("Video");
+
             }
-            catch (Exception ex)
+            else
             {
-                return Ok(ex.Message);
+                videoTopic = UploadFileHelper.UploadFile(Video);
             }
-            //List<SelectListItem> items = new List<SelectListItem>();
-            //var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
-            //foreach (var course in dataCourses)
-            //{
-            //    items.Add(new SelectListItem
-            //    {
-            //        Value = course.Id.ToString(),
-            //        Text = course.NameCourse
-            //    });
-            //}
-            //ViewBag.Course = items;
-            //return View(topicDetail);
+            if (Audio == null)
+            {
+                ModelState.Remove("Audio");
+
+            }
+            else
+            {
+                audioTopic = UploadFileHelper.UploadFile(Audio);
+            }
+
+            if (DocumentTopic == null)
+            {
+                ModelState.Remove("DocumentTopic");
+
+            }
+            else
+            {
+                documentTopic = UploadFileHelper.UploadFile(DocumentTopic);
+            }
+            if (ModelState.IsValid)
+            {
+                    var detail = new TopicQuery().GetDataTopicById(topicDetail.Id);
+                    videoTopic = detail.ViewVideoTopic;
+                    audioTopic = detail.ViewAudioTopic;
+                    documentTopic = detail.ViewDocumentTopic;
+                    // kiem tra xe nguoi co muon thay doi anh ko?
+              
+                    bool update = new TopicQuery().UpdateTopicById(
+                                    topicDetail.NameTopic,
+                                    topicDetail.CourseId,
+                                    topicDetail.Description,
+                                    videoTopic,
+                                    audioTopic,
+                                    documentTopic,
+                                    topicDetail.Status,
+                                    topicDetail.Id
+                                  );
+                    if (update)
+                    {
+                        TempData["updateStatus"] = true;
+                    }
+                    else
+                    {
+                        TempData["updateStatus"] = false;
+                    }
+                    return RedirectToAction(nameof(TopicsController.Index), "Topics");
+               
+            }
+           
+            List<SelectListItem> items = new List<SelectListItem>();
+            var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
+            foreach (var course in dataCourses)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = course.Id.ToString(),
+                    Text = course.NameCourse
+                });
+            }
+            ViewBag.Courses = items;
+            return View(topicDetail);
 
         }
 
