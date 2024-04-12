@@ -167,8 +167,21 @@ namespace TrainingFPT.Controllers
                 ViewBag.Courses = items;
                 return View(topic);
             }
-          
-         
+            if (!ModelState.IsValid)
+            {
+                List<SelectListItem> items = new List<SelectListItem>();
+                var dataCourses = new CourseQuery().GetAllDataCourses(null, null);
+                foreach (var course in dataCourses)
+                {
+                    items.Add(new SelectListItem
+                    {
+                        Value = course.Id.ToString(),
+                        Text = course.NameCourse
+                    });
+                }
+                ViewBag.Courses = items;
+                return View(topic);
+            }
             return View(topic);
         }
 

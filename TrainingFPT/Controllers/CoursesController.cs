@@ -21,6 +21,7 @@ namespace TrainingFPT.Controllers
                     Id = data.Id,
                     NameCourse = data.NameCourse,
                     CategoryId = data.CategoryId,
+                    NameCategory = data.NameCategory,
                     Description = data.Description,
                     Status = data.Status,
                     StartDate = data.StartDate,

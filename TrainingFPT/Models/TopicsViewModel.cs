@@ -15,7 +15,7 @@ namespace TrainingFPT.Models
         [Required(ErrorMessage = "Choose Course, please")]
         public int CourseId { get; set; }
 
-        [Required(ErrorMessage = "Enter name's course, please")]
+        [Required(ErrorMessage = "Enter name's Topic, please")]
         public string NameTopic { get; set; }
 
         public string? Description { get; set; }

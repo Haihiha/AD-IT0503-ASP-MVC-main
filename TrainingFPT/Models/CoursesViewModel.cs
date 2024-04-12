@@ -38,6 +38,7 @@ namespace TrainingFPT.Models
         public int? LikeCourse { get; set; }
 
         public int? StarCourse { get; set; }
+        public string? NameCategory { get; set; }
 
         [Required(ErrorMessage = "Choose Status, please")]
         public string Status { get; set; }
